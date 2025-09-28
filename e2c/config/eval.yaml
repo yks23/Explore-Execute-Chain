@@ -1,0 +1,41 @@
+eval:
+  number: 0
+  seed: ${eval.number}
+  dataset: ['amc23']
+  use_default: false
+  system_prompt: ""
+  question_suffix: "Provide the final answer in the boxed{}.Please reasoning step-by-step."
+  solution_prefix: ""
+  head: 
+  - "begin"
+  - ${eval.separator}
+  - "begin"
+  tail: 
+  - ${eval.separator}
+  - "end"
+  - "end"
+  separator: "<EXECUTION>"
+  combine_num: 0
+  save_path: ./evaluation/${eval.name}
+  sample_num: -1
+  batch_size: -1
+  temperature: 1.0
+  top_p: 1.0
+  rank: 0
+  enable_thinking: false
+  tp2: 1.0
+  split: test
+  resume: false
+  max_new_tokens: -1
+  use_hint: true
+  name: test
+  checklist: []
+  answer_seg: "boxed"
+  stop_token: null
+  backend: hf
+  need_static: true
+model:
+  type: hf
+  model_path: path/to/your/hf
+  # if checkpoint_path is not None, then model's weights will be loaded from checkpoint_path
+  checkpoint_path: null
