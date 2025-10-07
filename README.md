@@ -4,7 +4,6 @@ This repository provides the implementation of our paper:
 **Explore–Execute Chain: Towards an Efficient Structured Reasoning Paradigm**
 *Kaisen Yang, Lixuan He, Rushi Shah, Kaicheng Yang, Qinwei Ma, Dianbo Liu, Alex Lamb*
 
-> *Under review at ICLR 2026*
 
 ---
 
@@ -174,23 +173,23 @@ We thank the authors for releasing such a flexible and powerful platform.
 
 **BibTeX**
 
-```bibtex
-@inproceedings{yang2026explore,
-  title={Explore-Execute Chain: Towards an Efficient Structured Reasoning Paradigm},
-  author={Yang, Kaisen and He, Lixuan and Shah, Rushi and Yang, Kaicheng and Ma, Qinwei and Liu, Dianbo and Lamb, Alex},
-  booktitle={International Conference on Learning Representations (ICLR)},
-  year={2026},
-  note={under review}
+@misc{yang2025exploreexecutechainefficientstructured,
+      title={Explore-Execute Chain: Towards an Efficient Structured Reasoning Paradigm}, 
+      author={Kaisen Yang and Lixuan He and Rushi Shah and Kaicheng Yang and Qinwei Ma and Dianbo Liu and Alex Lamb},
+      year={2025},
+      eprint={2509.23946},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2509.23946}, 
 }
-```
 
 **APA**
 
-> Yang, K., He, L., Shah, R., Yang, K., Ma, Q., Liu, D., & Lamb, A. (2026). *Explore–Execute Chain: Towards an Efficient Structured Reasoning Paradigm*. International Conference on Learning Representations (ICLR). (Under review)
+> Yang, K., He, L., Shah, R., Yang, K., Ma, Q., Liu, D., & Lamb, A. (2026). *Explore–Execute Chain: Towards an Efficient Structured Reasoning Paradigm*. (Under review)
 
 **MLA**
 
-> Yang, Kaisen, et al. "Explore–Execute Chain: Towards an Efficient Structured Reasoning Paradigm." *International Conference on Learning Representations (ICLR)*, 2026. Under review.
+> Yang, Kaisen, et al. "Explore–Execute Chain: Towards an Efficient Structured Reasoning Paradigm." Under review.
 
 ---
 
