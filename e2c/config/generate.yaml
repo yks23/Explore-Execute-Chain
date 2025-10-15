@@ -1,0 +1,66 @@
+# E2C Generation Configuration
+# Configuration for model generation/inference
+
+generation:
+  # Dataset configuration
+  dataset: ['gsm8k']  # Options: gsm8k, math, aime24, aime25, amc23, all, med
+  sample_num: 5  # Number of samples per question
+  batch_size: -1  # -1 for auto, or specify batch size
+  max_new_tokens: -1  # -1 for auto, or specify max tokens
+  temperature: 1.0  # Sampling temperature
+  top_p: 1.0  # Top-p sampling
+  seed: 0  # Random seed
+  save_path: "./generations"  # Output directory
+  
+  # Generation settings
+  enable_thinking: false  # Enable thinking mode
+  use_hint: true  # Use hints if available
+  resume: false  # Resume from checkpoint
+  
+  # System prompt and formatting
+  system_prompt: ""  # System prompt (empty for default)
+  question_suffix: "Provide the final answer in the boxed{}. Please reasoning step-by-step."
+  solution_prefix: ""
+  
+  # Special tokens
+  head: ["begin"]
+  tail: ["end"] 
+  separator: "<EXECUTION>"
+  
+  # Evaluation settings
+  answer_seg: "boxed"  # Answer format
+  stop_token: null  # Stop token
+  backend: "hf"  # Backend type
+  need_static: true  # Generate static results
+
+  # SPECIAL settings
+  save_as_dataset: false  # Save as dataset
+  resume_dir: null  # Resume directory
+model:
+  # Model configuration
+  type: "hf"  
+  model_path: "/home/fit/alex/Kaisen.Yang/opensource/Explore-Execute-Chain/models/released/8B-Final"  # Model path (HuggingFace ID or local path)
+  checkpoint_path: null  # Optional checkpoint path
+  trust_remote_code: true  # Trust remote code for custom models
+  
+  # Model settings
+  torch_dtype: "bfloat16"  # Data type
+  device_map: "auto"  # Device mapping
+  use_cache: true  # Use KV cache
+  
+  # VLLM specific settings - optimized for maximum performance
+  vllm:
+    tensor_parallel_size: -1  # -1 for auto-detect all GPUs, or specify number
+    gpu_memory_utilization: 0.85  # GPU memory utilization (0.85 is optimal for most cases)
+    max_model_len: 8192  # Maximum sequence length
+    dtype: "bfloat16"  # Model dtype
+    trust_remote_code: true  # Trust remote code
+    
+    # Performance optimization settings
+    max_num_seqs: 256  # Maximum number of sequences in a batch
+    max_num_batched_tokens: 4096  # Maximum number of tokens in a batch (higher = better throughput)
+    enforce_eager: false  # Enable CUDA graphs for better performance
+    cudagraph_capture_sizes: [1, 2, 4, 8, 16, 32, 64, 128, 256]  # CUDA graph capture sizes
+    enable_chunked_prefill: true  # Enable chunked prefill for better memory efficiency
+    enable_prefix_caching: true  # Enable prefix caching for repeated prompts
+    disable_log_stats: false  # Keep stats for monitoring

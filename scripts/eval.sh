@@ -2,6 +2,7 @@
 #
 # E2C Model Evaluation Script
 # Evaluate trained E2C models on math/medical benchmarks
+# Can be run from scripts directory
 #
 # Usage:
 #   1. Basic evaluation (GSM8K):
@@ -24,7 +25,7 @@
 # ============================================================================
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PROJECT_ROOT="$( cd "$SCRIPT_DIR/../.." && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 
 echo "Script directory: $SCRIPT_DIR"
 echo "Project root: $PROJECT_ROOT"
@@ -144,6 +145,9 @@ if [ -n "$CHECKPOINT_PATH" ]; then
     MODEL_ARG="$MODEL_ARG model.checkpoint_path=$CHECKPOINT_PATH"
 fi
 
+# Set Python path to include e2c directory for module imports
+export PYTHONPATH="${PROJECT_ROOT}/e2c:${PYTHONPATH}"
+
 # Run evaluation with torchrun
 torchrun \
     --nproc_per_node=$N_GPUS \
@@ -182,10 +186,10 @@ if [ $EVAL_EXIT_CODE -eq 0 ]; then
     echo "     cat ${SAVE_PATH}/${DATASET}/static_${SEED}_merged.json"
     echo ""
     echo "  2. Evaluate on more datasets:"
-    echo "     bash e2c/inference/eval.sh --dataset math --sample 4"
+    echo "     bash scripts/eval.sh --dataset math --sample 4"
     echo ""
     echo "  3. Evaluate all math benchmarks:"
-    echo "     bash e2c/inference/eval.sh --dataset all --sample 8"
+    echo "     bash scripts/eval.sh --dataset all --sample 8"
 else
     echo "❌ Evaluation failed with exit code $EVAL_EXIT_CODE"
     echo "=========================================="
@@ -194,3 +198,4 @@ fi
 
 echo ""
 echo "Done! 🎉"
+

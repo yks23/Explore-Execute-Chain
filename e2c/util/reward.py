@@ -66,7 +66,8 @@ def keep_only_digits(s: str) -> str:
     """
     保留字符串中的数字，按原顺序拼接。
     """
-    return ''.join(ch for ch in s if ch.isdigit())
+    k=''.join(ch for ch in s if ch.isdigit())
+    return k
 
 def calculate_frac(s: str) -> float:
     """
@@ -142,9 +143,15 @@ def normalize_final_answer(final_answer: str) -> str:
             # 把保留数字就行
             float_answer = calculate_frac(final_answer)
             final_answer = keep_only_digits(final_answer)
-            return final_answer,float_answer
         else:
-            return keep_lowercase_and_digits(final_answer),None
+            final_answer = keep_lowercase_and_digits(final_answer)
+            float_answer = None
+            
+        # 删除前导0,0001->1,0000->0
+        final_answer = final_answer.lstrip('0')
+        if final_answer == '':
+            final_answer = '0'
+        return final_answer,float_answer
         
 def extract_boxed_content(s: str) -> list[str]:
     """

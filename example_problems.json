@@ -1,0 +1,59 @@
+[
+  {
+    "id": "gsm8k_example",
+    "category": "Math - Arithmetic",
+    "difficulty": "Easy",
+    "problem": "Janet's ducks lay 16 eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for $2 per fresh duck egg. How much in dollars does she make every day at the farmers' market?",
+    "answer": "18"
+  },
+  {
+    "id": "algebra_example",
+    "category": "Math - Algebra",
+    "difficulty": "Medium",
+    "problem": "If 3x + 7 = 22, what is the value of 5x - 3?",
+    "answer": "22"
+  },
+  {
+    "id": "geometry_example",
+    "category": "Math - Geometry",
+    "difficulty": "Medium",
+    "problem": "A rectangle has a length of 12 cm and a width of 8 cm. What is the area of the rectangle in square centimeters? If you then increase both the length and width by 50%, what is the new area?",
+    "answer": "96 cm² originally, 216 cm² after increase"
+  },
+  {
+    "id": "probability_example",
+    "category": "Math - Probability",
+    "difficulty": "Hard",
+    "problem": "A bag contains 5 red balls, 3 blue balls, and 2 green balls. If you randomly draw 2 balls without replacement, what is the probability that both balls are red?",
+    "answer": "2/9"
+  },
+  {
+    "id": "word_problem_example",
+    "category": "Math - Word Problem",
+    "difficulty": "Medium",
+    "problem": "A train leaves New York at 2 PM traveling at 60 mph. Another train leaves Philadelphia (90 miles away) at 3 PM traveling towards New York at 75 mph. At what time will they meet?",
+    "answer": "4:00 PM"
+  },
+  {
+    "id": "logic_example",
+    "category": "Logic - Reasoning",
+    "difficulty": "Medium",
+    "problem": "All cats are mammals. Some mammals are pets. Therefore, can we conclude that some cats are pets? Explain your reasoning.",
+    "answer": "No, this conclusion is not logically valid from the given premises alone."
+  },
+  {
+    "id": "medical_example",
+    "category": "Medical - Diagnosis",
+    "difficulty": "Hard",
+    "problem": "A 45-year-old patient presents with persistent fatigue, unexplained weight loss of 10 pounds over 2 months, and increased thirst. Lab results show fasting blood glucose of 180 mg/dL. What is the most likely diagnosis and what additional tests would you recommend?",
+    "answer": "Type 2 Diabetes Mellitus; recommend HbA1c, lipid panel, kidney function tests"
+  },
+  {
+    "id": "coding_example",
+    "category": "Code - Algorithm",
+    "difficulty": "Medium",
+    "problem": "Write a function to find the longest palindromic substring in a given string. For example, given 'babad', the function should return 'bab' or 'aba'. Explain your approach.",
+    "answer": "Use dynamic programming or expand around center approach"
+  }
+]
+

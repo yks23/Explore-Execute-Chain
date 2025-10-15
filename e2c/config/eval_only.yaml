@@ -1,0 +1,26 @@
+# E2C Evaluation-Only Configuration
+# Reuses generation config structure for consistency
+
+eval:
+  # Dataset configuration (inherits from generation)
+  dataset: ['gsm8k']  # Options: gsm8k, math, aime24, aime25, amc23, all, med
+  seed: 0  # Random seed (should match generation seed)
+  
+  # Paths
+  generation_path: "./generations"  # Path to generated results
+  save_path: "evaluation/e2c-eval"  # Output directory for evaluation results (eval folder)
+  
+  # Evaluation settings
+  checklist: []  # Format check list (empty for default)
+  
+  # Inherited from generation config
+  answer_seg: "boxed"  # Answer format
+  head: ["begin"]  # Special tokens
+  tail: ["end"]  # Special tokens
+  separator: "<EXECUTION>"  # Separator token
+
+# Model section (not used in eval_only, but kept for consistency)
+model:
+  type: "hf"  # Model type
+  model_path: "path/to/your/model"  # Model path (not used in eval_only)
+  checkpoint_path: null  # Checkpoint path (not used in eval_only)
