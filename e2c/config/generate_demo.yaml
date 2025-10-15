@@ -1,0 +1,54 @@
+# E2C Generation Demo Configuration
+# Demo configuration for local model generation
+
+generation:
+  # Dataset configuration
+  dataset: ['gsm8k']  # Start with GSM8K for demo
+  sample_num: 2  # Generate 2 samples for demo
+  batch_size: 1  # Small batch size for demo
+  max_new_tokens: 512  # Limit tokens for demo
+  temperature: 0.7  # Slightly lower temperature for more focused output
+  top_p: 0.9  # Top-p sampling
+  seed: 42  # Fixed seed for reproducible demo
+  save_path: "generations/demo"  # Demo output directory
+  
+  # Generation settings
+  enable_thinking: true  # Enable thinking mode
+  use_hint: true  # Use hints if available
+  resume: false  # Don't resume from checkpoint
+  
+  # System prompt and formatting
+  system_prompt: ""  # Use default system prompt
+  question_suffix: "Provide the final answer in the boxed{}. Please reasoning step-by-step."
+  solution_prefix: "<EXPLORATION>"
+  
+  # Special tokens
+  head: ["begin"]
+  tail: ["end"] 
+  separator: "<EXECUTION>"
+  
+  # Evaluation settings
+  answer_seg: "boxed"  # Answer format
+  stop_token: null  # Stop token
+  backend: "hf"  # Backend type
+  need_static: true  # Generate static results
+
+model:
+  # Model configuration - using local model
+  type: "vllm"  # Model type: hf, fsdp, lora, or vllm
+  model_path: "/home/fit/alex/Kaisen.Yang/opensource/Explore-Execute-Chain/models/released/8B-Final"  # Local model path
+  checkpoint_path: null  # No checkpoint needed for released model
+  trust_remote_code: true  # Trust remote code for custom models
+  
+  # Model settings
+  torch_dtype: "bfloat16"  # Data type
+  device_map: "auto"  # Device mapping
+  use_cache: true  # Use KV cache
+  
+  # VLLM specific settings
+  vllm:
+    tensor_parallel_size: 1  # Number of GPUs for tensor parallelism
+    gpu_memory_utilization: 0.9  # GPU memory utilization
+    max_model_len: 4096  # Maximum sequence length
+    dtype: "bfloat16"  # Model dtype
+    trust_remote_code: true  # Trust remote code

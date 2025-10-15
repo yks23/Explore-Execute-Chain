@@ -1,0 +1,61 @@
+# E2C Project .gitignore
+
+# Training outputs
+e2c/ignore/
+*.log
+*.out
+
+# Models (users load from HuggingFace, no local download needed)
+models/pretrained/
+models/released/
+models/checkpoints/
+models/*/
+
+# Keep only README
+!models/README.md
+
+# Data - processed data
+data/processed/
+data/raw/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Ray and distributed training
+/tmp/ray/
+nohup.out
+
+# Jupyter
+.ipynb_checkpoints
+
+# HuggingFace cache (if created in project)
+.huggingface/
+
+
+data/
+generations/
+evaluation/
+models/
+outputs/
+swanlog/
+/*.sh

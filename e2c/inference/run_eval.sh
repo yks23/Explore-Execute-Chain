@@ -1,23 +1,27 @@
 #!/bin/bash
 #
-# E2C Model Evaluation Script
-# Evaluate trained E2C models on math/medical benchmarks
+# E2C Model Complete Evaluation Pipeline (Generate + Evaluate)
+# This script runs the full evaluation in two stages:
+#   1. Generate model outputs
+#   2. Evaluate generated outputs
 #
 # Usage:
 #   1. Basic evaluation (GSM8K):
-#      bash eval.sh
+#      bash run_eval.sh
 #
 #   2. Evaluate on specific dataset:
-#      bash eval.sh --dataset math
+#      bash run_eval.sh --dataset math
 #
 #   3. Evaluate with custom model:
-#      bash eval.sh --model models/checkpoints/rl/stage2-main/final
+#      bash run_eval.sh --model models/checkpoints/rl/stage2-main/final
 #
 #   4. Evaluate on all math benchmarks:
-#      bash eval.sh --dataset all --sample 4
+#      bash run_eval.sh --dataset all --sample 4
 #
 #   5. Use HuggingFace model:
-#      bash eval.sh --model <your-org>/Explore-Execute-Chain --subfolder 4B-Final
+#      bash run_eval.sh --model <your-org>/Explore-Execute-Chain --subfolder 4B-Final
+
+set -e  # Exit on any error
 
 # ============================================================================
 # Get script directory and project root
@@ -54,6 +58,7 @@ TOP_P="${TOP_P:-1.0}"
 N_GPUS="${N_GPUS:-1}"
 SEED="${SEED:-0}"
 SAVE_PATH="${SAVE_PATH:-evaluation/e2c-eval}"
+MASTER_PORT="${MASTER_PORT:-29500}"
 
 # ============================================================================
 # Parse command line arguments
@@ -93,6 +98,10 @@ while [[ $# -gt 0 ]]; do
             SAVE_PATH="$2"
             shift 2
             ;;
+        --port)
+            MASTER_PORT="$2"
+            shift 2
+            ;;
         *)
             echo "Unknown argument: $1"
             exit 1
@@ -105,7 +114,7 @@ done
 # ============================================================================
 
 echo "=========================================="
-echo "E2C Evaluation Configuration"
+echo "E2C Complete Evaluation Pipeline"
 echo "=========================================="
 echo "Model Path:     $MODEL_PATH"
 if [ -n "$SUBFOLDER" ]; then
@@ -118,6 +127,7 @@ echo "Dataset(s):     $DATASET"
 echo "Sample Num:     $SAMPLE_NUM"
 echo "Temperature:    $TEMPERATURE"
 echo "GPUs:           $N_GPUS"
+echo "Master Port:    $MASTER_PORT"
 echo "Save Path:      $SAVE_PATH"
 echo "=========================================="
 echo ""
@@ -126,13 +136,9 @@ echo ""
 mkdir -p "$SAVE_PATH"
 
 # ============================================================================
-# Run Evaluation
+# Prepare model path override
 # ============================================================================
 
-echo "Starting evaluation..."
-echo ""
-
-# Prepare model path override
 if [ -n "$SUBFOLDER" ]; then
     MODEL_ARG="model.model_path=$MODEL_PATH model.subfolder=$SUBFOLDER"
 else
@@ -144,11 +150,59 @@ if [ -n "$CHECKPOINT_PATH" ]; then
     MODEL_ARG="$MODEL_ARG model.checkpoint_path=$CHECKPOINT_PATH"
 fi
 
-# Run evaluation with torchrun
+# ============================================================================
+# Stage 1: Generate model outputs
+# ============================================================================
+
+echo "=========================================="
+echo "Stage 1/2: Generating Model Outputs"
+echo "=========================================="
+echo ""
+
 torchrun \
     --nproc_per_node=$N_GPUS \
-    --master_port=29500 \
-    e2c/inference/eval.py \
+    --master_port=$MASTER_PORT \
+    e2c/inference/generate.py \
+    --config-path="../config" \
+    --config-name="eval" \
+    $MODEL_ARG \
+    eval.dataset="['$DATASET']" \
+    eval.sample_num=$SAMPLE_NUM \
+    eval.batch_size=$BATCH_SIZE \
+    eval.max_new_tokens=$MAX_NEW_TOKENS \
+    eval.temperature=$TEMPERATURE \
+    eval.top_p=$TOP_P \
+    eval.seed=$SEED \
+    eval.save_path="$SAVE_PATH" \
+    eval.backend=hf
+
+GENERATE_EXIT_CODE=$?
+
+if [ $GENERATE_EXIT_CODE -ne 0 ]; then
+    echo ""
+    echo "=========================================="
+    echo "❌ Generation failed with exit code $GENERATE_EXIT_CODE"
+    echo "=========================================="
+    exit $GENERATE_EXIT_CODE
+fi
+
+echo ""
+echo "✅ Generation completed successfully!"
+echo ""
+
+# ============================================================================
+# Stage 2: Evaluate generated outputs
+# ============================================================================
+
+echo "=========================================="
+echo "Stage 2/2: Evaluating Generated Outputs"
+echo "=========================================="
+echo ""
+
+torchrun \
+    --nproc_per_node=$N_GPUS \
+    --master_port=$MASTER_PORT \
+    e2c/inference/evaluate.py \
     --config-path="../config" \
     --config-name="eval" \
     $MODEL_ARG \
@@ -168,7 +222,7 @@ echo ""
 echo "=========================================="
 
 if [ $EVAL_EXIT_CODE -eq 0 ]; then
-    echo "✅ Evaluation Complete!"
+    echo "✅ Complete Evaluation Pipeline Finished!"
     echo "=========================================="
     echo ""
     echo "Results saved to: $SAVE_PATH"
@@ -182,10 +236,10 @@ if [ $EVAL_EXIT_CODE -eq 0 ]; then
     echo "     cat ${SAVE_PATH}/${DATASET}/static_${SEED}_merged.json"
     echo ""
     echo "  2. Evaluate on more datasets:"
-    echo "     bash e2c/inference/eval.sh --dataset math --sample 4"
+    echo "     bash e2c/inference/run_eval.sh --dataset math --sample 4"
     echo ""
     echo "  3. Evaluate all math benchmarks:"
-    echo "     bash e2c/inference/eval.sh --dataset all --sample 8"
+    echo "     bash e2c/inference/run_eval.sh --dataset all --sample 8"
 else
     echo "❌ Evaluation failed with exit code $EVAL_EXIT_CODE"
     echo "=========================================="
@@ -194,3 +248,4 @@ fi
 
 echo ""
 echo "Done! 🎉"
+
