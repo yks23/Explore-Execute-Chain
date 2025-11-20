@@ -1,0 +1,97 @@
+data:
+  train_batch_size: 40
+  micro_batch_size: null
+  micro_batch_size_per_gpu: 5
+  train_files: ~/Kaisen.Yang/CoT Decomposition/dataset/s1k/qwen-sft.parquet
+  val_files: ~/Kaisen.Yang/CoT Decomposition/dataset/openrl/valid.parquet
+  prompt_key: question
+  response_key: solution
+  ratio: [0,0,0.9,0.1,0.0]
+  prompt_dict_keys: null
+  response_dict_keys: null
+  training_mode: mixed
+  multiturn:
+    enable: false
+    messages_key: messages
+    tools_key: tools
+    enable_thinking_key: enable_thinking
+  max_length: 4000
+  truncation: right
+  balance_dp_token: false
+  chat_template: null
+  custom_cls:
+    path: null
+    name: null
+  use_shm: false
+  apply_chat_template_kwargs: {}
+model:
+  partial_pretrain: "/home/fit/alex/.cache/modelscope/hub/models/Qwen/Qwen3-8B"
+  use_shm: false
+  fsdp_config:
+    model_dtype: bf16
+    wrap_policy:
+      min_num_params: 0
+    cpu_offload: false
+    offload_params: false
+  external_lib: null
+  enable_gradient_checkpointing: true
+  trust_remote_code: false
+  lora_rank: -1
+  lora_alpha: 16
+  target_modules: all-linear
+  use_liger: false
+  strategy: fsdp2
+optim:
+  lr: 1.0e-05
+  betas:
+  - 0.9
+  - 0.95
+  weight_decay: 0.0001
+  warmup_steps_ratio: 0.1
+  clip_grad: 1.0
+  lr_scheduler: cosine
+ulysses_sequence_parallel_size: 1
+use_remove_padding: false
+trainer:
+  default_local_dir: /WORK/fit/alex/Kaisen/checkpoints/${trainer.project_name}/${trainer.experiment_name}
+  default_hdfs_dir: null
+  project_name: qwen-2
+  experiment_name: s1k
+  distill_ratio: 0.0
+  total_epochs: 3
+  total_training_steps: null
+  logger:
+  - console
+  seed: 114514
+  save_freq: 50
+  test_freq: -1
+  kl_coeff: 0
+  nnodes: 1
+  n_gpus_per_node: 8
+  max_ckpt_to_keep: null
+  resume_mode: auto
+  resume_from_path: null
+  checkpoint:
+    save_contents:
+    # - model
+    # - optimizer
+    # - extra
+    - hf_model
+    load_contents:
+    - model
+    - optimizer
+    - extra
+  device: cuda
+global_step: 0
+eval:
+  number: 0
+  seed: 0
+  model_path: ${trainer.default_local_dir}
+  is_lora: 0
+  dataset:
+  - openrl
+  save_path: /WORK/fit/alex/evaluation/${eval.dataset}
+  batch_size: 30
+  tp1: 1.0
+  tp2: 1.0
+  name: test

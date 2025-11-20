@@ -1,0 +1,98 @@
+data:
+  train_batch_size: 240
+  micro_batch_size: null # will be deprecated, use micro_batch_size_per_gpu
+  micro_batch_size_per_gpu: 12 # this is also val batch size
+  train_files: ~/Kaisen.Yang/CoT Decomposition/dataset/openrl/raw_train.parquet
+  val_files: ~/Kaisen.Yang/CoT Decomposition/dataset/openrl/raw_valid.parquet
+  # Single-turn settings
+  prompt_key: question
+  response_key: solution
+  prompt_dict_keys: null
+  response_dict_keys: null
+  training_mode: all
+  # Multi-turn settings
+  multiturn:
+    enable: false  # Set to true to use multi-turn dataset
+    messages_key: messages  # Key for messages list in multi-turn mode
+    tools_key: tools  # Key for tools list in multi-turn mode
+    enable_thinking_key: enable_thinking  # Whether to enable thinking in multi-turn mode
+  max_length: 1300
+  truncation: right
+  balance_dp_token: False
+  chat_template: null
+  custom_cls:
+    path: null
+    name: null
+  use_shm: False
+  apply_chat_template_kwargs: {}
+model:
+  partial_pretrain: /home/fit/alex/.cache/modelscope/hub/models/LLM-Research/Meta-Llama-3.1-8B-Instruct
+  use_shm: False
+  fsdp_config:
+    model_dtype: bf16
+    wrap_policy:
+      min_num_params: 0
+    cpu_offload: False
+    offload_params: False
+  external_lib: null
+  enable_gradient_checkpointing: True
+  trust_remote_code: False
+  lora_rank: -1  # Set to positive value to enable LoRA (e.g., 32)
+  lora_alpha: 16  # LoRA scaling factor
+  target_modules: all-linear  # Target modules for LoRA adaptation
+  use_liger: False
+  strategy: fsdp2
+optim:
+  lr: 1e-5
+  betas: [0.9, 0.95]
+  weight_decay: 0.01
+  warmup_steps_ratio: 0.1
+  clip_grad: 1.0
+  lr_scheduler: cosine
+ulysses_sequence_parallel_size: 1
+use_remove_padding: False
+trainer:
+  default_local_dir: /home/fit/alex/Kaisen.Yang/CoT Decomposition/verl/checkpoints/${trainer.project_name}/${trainer.experiment_name}
+  default_hdfs_dir: null
+  project_name: Comparison
+  experiment_name: full-openrl
+  total_epochs: 8
+  total_training_steps: null
+  logger: [ 'console' ]
+  seed: 114514
+  save_freq: 100
+  test_freq: 300
+  nnodes: 1
+  n_gpus_per_node: 2
+  max_ckpt_to_keep: null  # Maximum number of checkpoints to keep, set to null to keep all
+
+  # Resume mode: "auto", "disable", or "resume_path"
+  # "auto": resume from last checkpoint if available
+  # "disable": start from scratch
+  # "resume_path": resume from a user-defined path
+  resume_mode: auto
+
+  # Path to resume training from (used when resume_mode is "resume_path" or "auto")
+  resume_from_path: null
+
+  # Checkpoint configuration
+  checkpoint:
+    # What to include in saved checkpoints
+    # with 'hf_model' you can save whole model as hf format, now only use sharded model checkpoint to save space
+    save_contents: ["model", "optimizer", "extra","hf_model"]
+
+    # For more flexibility, you can specify the contents to load from the checkpoint.
+    load_contents: ["model", "optimizer", "extra"]
+  device: cuda
+global_step: 0
+eval:
+  number: 0
+  seed: 0
+  model_path: ${trainer.default_local_dir}
+  is_lora: 0
+  dataset: [openrl]
+  save_path: ./evaluation/${eval.dataset}
+  batch_size: 30
+  tp1: 1.0
+  tp2: 1.0
+  name: test
