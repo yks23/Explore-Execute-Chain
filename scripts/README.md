@@ -139,7 +139,7 @@ bash eval.sh --dataset all --sample 8
 bash eval.sh --model models/checkpoints/rl/stage2-main/final
 
 # 使用 HuggingFace 模型
-bash eval.sh --model <your-org>/Explore-Execute-Chain --subfolder 4B-Final
+bash eval.sh --model anomyous-author/Explore-Execute-Chain --subfolder 4B-Final
 ```
 
 **选项：**
@@ -181,7 +181,7 @@ bash eval.sh --dataset all --sample 4
 
 ```bash
 # 使用 HuggingFace 上的 4B 模型
-bash eval.sh --model <your-org>/Explore-Execute-Chain --subfolder 4B-Final
+bash eval.sh --model anomyous-author/Explore-Execute-Chain --subfolder 4B-Final
 
 # 使用 8B 模型
 bash eval.sh --model <your-org>/Explore-Execute-Chain --subfolder 8B-Final --dataset math
@@ -230,7 +230,7 @@ bash prepare_all_data.sh
 
 ### 找不到模型？
 - 确保之前的训练步骤已完成
-- 或者使用 HuggingFace 模型：`--model <your-org>/Explore-Execute-Chain`
+- 或者使用 HuggingFace 模型：`--model anomyous-author/Explore-Execute-Chain`
 
 ### GPU 内存不足？
 - 减少 GPU 数量

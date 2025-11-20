@@ -18,7 +18,7 @@
 #      bash eval.sh --dataset all --sample 4
 #
 #   5. Use HuggingFace model:
-#      bash eval.sh --model <your-org>/Explore-Execute-Chain --subfolder 4B-Final
+#      bash eval.sh --model anomyous-author/Explore-Execute-Chain --subfolder 4B-Final
 
 # ============================================================================
 # Get script directory and project root
@@ -39,7 +39,7 @@ cd "$PROJECT_ROOT"
 # ============================================================================
 
 # Model configuration
-MODEL_PATH="${MODEL_PATH:-<your-org>/Explore-Execute-Chain}"
+MODEL_PATH="${MODEL_PATH:-anomyous-author/Explore-Execute-Chain}"
 SUBFOLDER="${SUBFOLDER:-4B-Final}"
 CHECKPOINT_PATH="${CHECKPOINT_PATH:-}"  # Optional: load weights from checkpoint
 

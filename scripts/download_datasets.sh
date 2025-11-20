@@ -94,7 +94,7 @@ download_sft_data() {
     echo -e "${YELLOW}[SFT] 开始下载 SFT 训练数据...${NC}"
     
     # 从 Hugging Face 下载 E2C-SFT 数据集（在根目录）
-    local SFT_URL="${HF_BASE_URL}/datasets/<your-org>/Explore-Execute-Chain-Datasets/resolve/main/e2c-sft.parquet"
+    local SFT_URL="${HF_BASE_URL}/datasets/anomyous-author/Explore-Execute-Chain-Datasets/resolve/main/e2c-sft.parquet"
     local SFT_FILE="${RAW_DIR}/sft/e2c-sft.parquet"
     
     if [ -f "${SFT_FILE}" ]; then
@@ -126,8 +126,8 @@ download_rl_data() {
     # 从 Hugging Face 下载 E2C-RL 数据集（在根目录，下载后重命名）
     # HuggingFace 上的文件名: ef-rl.parquet, ef-rl-valid.parquet
     # 本地保存名称: e2c-rl.parquet, e2c-rl-valid.parquet
-    local RL_TRAIN_URL="${HF_BASE_URL}/datasets/<your-org>/Explore-Execute-Chain-Datasets/resolve/main/ef-rl.parquet"
-    local RL_VALID_URL="${HF_BASE_URL}/datasets/<your-org>/Explore-Execute-Chain-Datasets/resolve/main/ef-rl-valid.parquet"
+    local RL_TRAIN_URL="${HF_BASE_URL}/datasets/anomyous-author/Explore-Execute-Chain-Datasets/resolve/main/ef-rl.parquet"
+    local RL_VALID_URL="${HF_BASE_URL}/datasets/anomyous-author/Explore-Execute-Chain-Datasets/resolve/main/ef-rl-valid.parquet"
     local RL_TRAIN_FILE="${RAW_DIR}/rl/e2c-rl.parquet"
     local RL_VALID_FILE="${RAW_DIR}/rl/e2c-rl-valid.parquet"
     
@@ -192,7 +192,7 @@ download_eval_data() {
     
     mkdir -p "${EVAL_DIR}"
     
-    local base_url="${HF_BASE_URL}/datasets/<your-org>/Explore-Execute-Chain-Datasets/resolve/main/evaluation"
+    local base_url="${HF_BASE_URL}/datasets/anomyous-author/Explore-Execute-Chain-Datasets/resolve/main/evaluation"
     
     echo "下载评估数据集..."
     for dataset_name in "${EVAL_DATASETS[@]}"; do

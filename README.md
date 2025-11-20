@@ -4,7 +4,6 @@ This repository provides the implementation of our paper:
 **Explore–Execute Chain: Towards an Efficient Structured Reasoning Paradigm**
 *Kaisen Yang, Lixuan He, Rushi Shah, Kaicheng Yang, Qinwei Ma, Dianbo Liu, Alex Lamb*
 
-
 ---
 
 ## 📖 Overview
@@ -21,32 +20,6 @@ The **Explore–Execute Chain (E2C)** framework addresses this challenge by **de
 * **Interpretability** — Exploration traces are explicit and auditable.
 * **Adaptability** — Exploration can be domain-adapted with minimal supervision.
 
-⚠️ **Repository Status:** This repository is now **fully released** with comprehensive training and inference capabilities.
-
-* ✅ **Models released**: E2C-Qwen3-4B and E2C-Qwen3-8B models are available on HuggingFace
-* ✅ **Training pipeline**: Complete SFT, RL, and EF-SFT training scripts are ready to use
-* ✅ **Inference & evaluation**: Full evaluation pipeline with multiple benchmarks
-* 🔄 **TTS (Test-Time Scaling)**: Advanced TTS features are under continuous integration and improvement
-
----
-
-## 📝 Current Progress
-
-**Released / Fully Usable:**
-
-* ✅ **Pretrained E2C models**: Qwen3-4B and Qwen3-8B models on HuggingFace
-* ✅ **Complete training pipeline**: SFT, RL, and EF-SFT training scripts
-* ✅ **Evaluation datasets**: Mathematics, Medical, and other benchmarks
-* ✅ **Inference & evaluation**: Full pipeline for model testing and benchmarking
-* ✅ **Data preparation**: Automated data processing and dataset preparation
-* ✅ **Special token handling**: Automatic token configuration for training
-
-**Under Continuous Integration:**
-
-* 🔄 **Advanced TTS features**: Enhanced test-time scaling with clustering and fusion
-* 🔄 **Extended exploration strategies**: Additional reasoning mechanisms
-* 🔄 **Performance optimizations**: Further efficiency improvements
-
 ---
 
 ## 🚀 Key Features
@@ -59,36 +32,30 @@ The **Explore–Execute Chain (E2C)** framework addresses this challenge by **de
 * **Efficient domain adaptation (EF-SFT)** — Train with exploration-only data ✅ **Ready**
 * **Test-time scaling (TTS)** — Sample multiple explorations and aggregate via clustering / LM fusion 🔄 **Under continuous integration**
 * **Benchmarks**:
-
   * **Mathematics**: AIME’24/25, MATH500, Olympiad, Minerva
   * **Medical reasoning**: MedQA, MedMCQA, MMLU medical subsets
-
 ---
 
 ## 📂 Repository Structure
 
 ```
 .
-├── scripts/                    # 🔧 All executable scripts (run from here!)
+├── scripts/                    # All executable scripts
 │   ├── prepare_all_data.sh     # Data preparation
 │   ├── download_datasets.sh    # Download datasets
+│   ├── download_model.sh       # Model download
 │   ├── eval.sh                 # Model evaluation
 │   ├── e2c_sft.sh             # SFT training
-│   ├── e2c_rl.sh              # RL training
-│   ├── ef-sft.sh              # Domain adaptation
-│   ├── generate.sh            # Generation scripts
-│   └── COMMANDS.md            # Command reference
+│   ├── e2c_rl.sh              # RL training (PPO)
+│   ├── e2c_dapo.sh            # DAPO training
+│   └── ef-sft.sh              # Domain adaptation
 ├── e2c/                       # Core E2C framework
-│   ├── inference/             # Test-time scaling and evaluation ✅ ready
-│   ├── util/                  # Utility functions and model helpers ✅ ready
-│   └── config/                # Configuration files ✅ ready
+│   ├── inference/             # Inference and evaluation
+│   ├── util/                  # Utility functions
+│   └── config/                # Configuration files
 ├── verl/                      # Training framework (VERL-based)
-│   ├── examples/              # Training examples and recipes ✅ ready
-│   ├── verl/                  # Core training components ✅ ready
-│   └── tests/                 # Test suites ✅ ready
 ├── data/                      # Dataset preparation and evaluation data
 ├── models/                    # Model checkpoints and pretrained models
-│   ├── checkpoints/           # Training checkpoints
 │   ├── pretrained/            # Pretrained models
 │   └── released/              # Released model versions
 ├── generations/               # Generated outputs from models
@@ -127,13 +94,13 @@ import torch
 
 # Load model directly from Hugging Face
 model = AutoModelForCausalLM.from_pretrained(
-    "KaisenYang/Explore-Execute-Chain",
+    "anomyous-author/Explore-Execute-Chain",
     subfolder="4B-Final",  # or "8B-Final" for the 8B model
     torch_dtype=torch.bfloat16,
     device_map="auto"
 )
 tokenizer = AutoTokenizer.from_pretrained(
-    "KaisenYang/Explore-Execute-Chain",
+    "anomyous-author/Explore-Execute-Chain",
     subfolder="4B-Final"
 )
 
@@ -157,43 +124,74 @@ print(response)
 ```
 
 **Model Options:**
-- **4B Model**: `subfolder="4B-Final"` (~8GB, faster inference)
-- **8B Model**: `subfolder="8B-Final"` (~16GB, better performance)
-
-**More Examples:**
-- 🔧 **Complete training pipeline**: See [Training Pipeline](#️-training-pipeline) section below
-- 📊 **Evaluation scripts**: `e2c/inference/` and `scripts/` directory
-- 📖 **Documentation**: See respective README files in each directory
-- 🚀 **Quick training**: Run `bash scripts/e2c_sft.sh` to start training
+- **4B Model**: `subfolder="4B-Final"` (~8GB)
+- **8B Model**: `subfolder="8B-Final"` (~16GB)
 
 ---
 
 ## 📦 Data Preparation
 
+### Quick Start
+
 Prepare training data in one command:
 
 ```bash
+# Basic usage
 bash scripts/prepare_all_data.sh
+
+# Use mirror source (recommended for China)
+bash scripts/prepare_all_data.sh --mirror
+
+# Skip download, process existing data only
+bash scripts/prepare_all_data.sh --skip-download
+
+# Prepare only SFT data
+bash scripts/prepare_all_data.sh --skip-rl
 ```
 
 This will:
-- ✅ Download datasets from [HuggingFace](https://huggingface.co/datasets/KaisenYang/Explore-Execute-Chain-Datasets)
+- ✅ Download datasets from [HuggingFace](https://huggingface.co/datasets/anomyous-author/Explore-Execute-Chain-Datasets)
 - ✅ Process SFT training data
 - ✅ Process RL training data
 
 **Time:** ~30-60 minutes | **Storage:** ~10 GB
 
-**Quick download only:**
+### Download Datasets Only
+
+If you only need to download raw datasets without processing:
+
 ```bash
+# Download all datasets (SFT + RL + Evaluation)
 bash scripts/download_datasets.sh
 
-# For users in China (faster with mirror):
-bash scripts/download_datasets.sh --mirror
+# Download specific dataset types
+bash scripts/download_datasets.sh --dataset sft    # Only SFT data
+bash scripts/download_datasets.sh --dataset rl      # Only RL data
+bash scripts/download_datasets.sh --dataset eval   # Only evaluation datasets (16 datasets)
 ```
 
-**🌐 Mirror Support:**
-- Use `--mirror` flag to download from hf-mirror.com (faster for users in China)
-- Set environment variable: `export HF_ENDPOINT=https://hf-mirror.com`
+**🌐 Mirror Support (China):**
+
+```bash
+# Use --mirror flag
+bash scripts/download_datasets.sh --mirror
+bash scripts/prepare_all_data.sh --mirror
+
+# Or set environment variable
+export HF_ENDPOINT=https://hf-mirror.com
+bash scripts/download_datasets.sh
+```
+
+**Dataset Information:**
+- **SFT Data**: `e2c-sft.parquet` (77.7 MB) → `data/raw/sft/`
+- **RL Data**: 
+  - `e2c-rl.parquet` (19.4 MB) → `data/raw/rl/`
+  - `e2c-rl-valid.parquet` (706 KB) → `data/raw/rl/`
+- **Evaluation Data**: 16 datasets → `data/evaluation/`
+  - **Math**: aime24, aime25, amc23, gsm8k, math-algebra, math500, minerva, olympiad_bench
+  - **Medical**: anatomy, clinical_knowledge, college_biology, college_medicine, medical_genetics, medmcqa, medqa, professional_medicine
+
+**Note:** The datasets are hosted at `anomyous-author/Explore-Execute-Chain-Datasets` on HuggingFace. The download script automatically handles file naming (e.g., `ef-rl.parquet` → `e2c-rl.parquet`).
 
 ---
 
@@ -201,14 +199,40 @@ bash scripts/download_datasets.sh --mirror
 
 ### E2C Released Models
 
-Use E2C models directly from Hugging Face (no download needed):
+E2C models are available on HuggingFace at `anomyous-author/Explore-Execute-Chain`:
 
 | Model | Parameters | Size | Subfolder | Link |
 |-------|-----------|------|-----------|------|
-| E2C-Qwen3-4B | 4B | ~8 GB | `4B-Final` | [HuggingFace](https://huggingface.co/KaisenYang/Explore-Execute-Chain) |
-| E2C-Qwen3-8B | 8B | ~16 GB | `8B-Final` | [HuggingFace](https://huggingface.co/KaisenYang/Explore-Execute-Chain) |
+| E2C-Qwen3-4B | 4B | ~8 GB | `4B-Final` | [HuggingFace](https://huggingface.co/anomyous-author/Explore-Execute-Chain) |
+| E2C-Qwen3-8B | 8B | ~16 GB | `8B-Final` | [HuggingFace](https://huggingface.co/anomyous-author/Explore-Execute-Chain) |
 
-See [Quick Start](#-quick-start---inference-example) above for usage examples.
+### Download Models
+
+Models are automatically downloaded when you use them in code. However, you can also pre-download them:
+
+**Using Script (Recommended):**
+
+```bash
+# Download 4B model using mirror (recommended for China)
+bash scripts/download_model.sh --subfolder 4B-Final --mirror
+
+# Download 8B model using mirror
+bash scripts/download_model.sh --subfolder 8B-Final --mirror
+
+# Download from official source
+bash scripts/download_model.sh --subfolder 4B-Final
+```
+
+**🌐 Mirror Support (China):**
+
+```bash
+# Use script with --mirror flag
+bash scripts/download_model.sh --subfolder 4B-Final --mirror
+
+# Or set environment variable
+export HF_ENDPOINT=https://hf-mirror.com
+# Then use transformers normally
+```
 
 ### Base Models for Training
 
@@ -250,7 +274,6 @@ If you want to train your own E2C models, use these base models:
 >
 > **Note:** This step is **automatically handled** when using HuggingFace model IDs (e.g., `Qwen/Qwen3-8B`) in the training scripts. Only needed for pre-downloaded local models.
 
-**For more details:** See the [Training Pipeline](#️-training-pipeline) section above for complete training instructions.
 
 ---
 
@@ -287,50 +310,42 @@ bash scripts/e2c_sft.sh
 - Training time: ~8 hours on 4×A100
 - Output: SFT checkpoint in `models/checkpoints/sft/`
 
-### Stage 2: Reinforcement Learning (E2C-RL)
+### Stage 2: Reinforcement Learning
 
-Fine-tune with RL to improve reasoning quality (two-stage training):
+**Option A: GRPO Training (e2c_rl.sh)**
 
 ```bash
-# Run two-stage RL training (default)
-bash scripts/e2c_rl.sh
-
-# Or customize with environment variables
+# Two-stage RL training
 export MODEL_PATH="models/checkpoints/sft/final"
-export TRAIN_DATA="data/processed/rl/e2c-rl-train.parquet"
-export VAL_DATA="data/processed/rl/e2c-rl-val.parquet"
+export N_GPUS=8
 bash scripts/e2c_rl.sh
 
-# Or run specific stage only
-bash scripts/e2c_rl.sh --stage 2  # Only run stage 2
-```
+# Run specific stage
+bash scripts/e2c_rl.sh --stage 2
 
-**⚠️ Important: Configure Special Token IDs**
-
-Before RL training, verify and configure the token IDs for `</EXPLORATION>` and `<EXECUTION>`:
-
-```bash
-# Check your model's token IDs
-python3 << 'EOF'
-from transformers import AutoTokenizer
-tokenizer = AutoTokenizer.from_pretrained("your/model/path", trust_remote_code=True)
-print(f"</EXPLORATION>: {tokenizer.convert_tokens_to_ids('</EXPLORATION>')}")
-print(f"<EXECUTION>: {tokenizer.convert_tokens_to_ids('<EXECUTION>')}")
-EOF
-
-# Configure for training (default: 151672, 151673 for Qwen2.5/3)
+# Configure special tokens (if needed)
 export SPECIAL_TOKEN_1=151672  # </EXPLORATION>
 export SPECIAL_TOKEN_2=151673  # <EXECUTION>
 bash scripts/e2c_rl.sh
 ```
 
+**Option B: DAPO Training (e2c_dapo.sh)**
+
+```bash
+# DAPO with token operations
+export MODEL_PATH="models/checkpoints/sft/final"
+export N_GPUS=8
+bash scripts/e2c_dapo.sh
+
+# Run specific stage
+bash scripts/e2c_dapo.sh --stage 2
+```
+
 **Training Configuration:**
-- **Stage 1 (Warm-up)**: 32 rollouts, 1 epoch, no constraints
-- **Stage 2 (Main)**: 8 rollouts, 2 epochs, with constraints
-- Starting point: E2C-SFT checkpoint
-- Training data: ~20K problems with ground truth
-- Training time: ~12-16 hours on 8×A100
-- Output: Final E2C model in `models/checkpoints/rl/stage2-main/`
+- **Stage 1**: 32 rollouts, 1 epoch
+- **Stage 2**: 8 rollouts, 2 epochs
+- Training data: 17K problems
+- Output: `models/checkpoints/rl/stage2-main/` or `models/checkpoints/dapo/stage2-main/`
 
 ### Optional: Efficient Domain Adaptation (EF-SFT)
 
@@ -350,30 +365,13 @@ bash scripts/ef-sft.sh
 - Quick tuning with limited data
 - Exploration strategy refinement
 
-### Training Tips
-
-**GPU Memory Requirements:**
-- **Qwen3-4B**: 4×RTX 3090 (24GB each) or 2×A100
-- **Qwen3-8B**: 4×A100 (40GB each) recommended
-- **Llama-3.1-8B**: Similar to Qwen3-8B
-
-**Hyperparameter Tuning:**
-- Learning rate: 1e-6 (SFT), 5e-7 (RL)
-- Batch size: Adjust based on GPU memory
-- Gradient accumulation: Use to simulate larger batches
-
-**Checkpointing:**
-- SFT: Saves every 500 steps
-- RL: Saves every epoch
-- Best checkpoint selected by validation accuracy
-
 ---
 
 ## 🔍 Evaluation
 
-### Option 1: One-Step Evaluation (Quick)
+### Option 1: Using Scripts (Recommended)
 
-Generate and evaluate in one command:
+Use the convenient shell scripts for quick evaluation:
 
 ```bash
 # Quick test on GSM8K with 8B-Final
@@ -389,25 +387,113 @@ bash scripts/eval.sh --subfolder 8B-Final --dataset all --sample 8
 bash scripts/eval.sh --model /path/to/model --dataset gsm8k
 ```
 
-### Option 2: Two-Step Evaluation (Flexible)
+### Option 2: Direct Python Scripts (Advanced)
 
-For multiple evaluations or analysis, separate generation and evaluation:
+For more control, use Python scripts directly with Hydra configuration:
+
+#### Generation
+
+Generate model responses using the `generate.py` script:
 
 ```bash
-# Step 1: Generate responses once
-bash scripts/generate.sh --subfolder 8B-Final --dataset gsm8k --sample 8
+# Basic usage (uses default config from e2c/config/generate.yaml)
+python e2c/inference/generate.py \
+    --config-path=e2c/config \
+    --config-name=generate
 
-# Step 2: Evaluate (can run multiple times with different criteria)
-bash scripts/eval_only.sh \
-  --generation-path ./generations \
-  --dataset gsm8k
+# Customize via command line overrides
+python e2c/inference/generate.py \
+    --config-path=e2c/config \
+    --config-name=generate \
+    generation.dataset=['gsm8k'] \
+    generation.sample_num=8 \
+    generation.temperature=0.7 \
+    model.model_path="anomyous-author/Explore-Execute-Chain" \
+    model.checkpoint_path="4B-Final"
+
+# Use VLLM backend for faster inference
+python e2c/inference/generate.py \
+    --config-path=e2c/config \
+    --config-name=generate \
+    model.type=vllm \
+    model.model_path="anomyous-author/Explore-Execute-Chain" \
+    model.checkpoint_path="8B-Final" \
+    generation.dataset=['math'] \
+    generation.sample_num=4
+```
+
+**Generation Configuration Options:**
+- `generation.dataset`: Dataset name(s) - `['gsm8k']`, `['math']`, `['all']`, `['med']`, etc.
+- `generation.sample_num`: Number of samples per question (default: 5)
+- `generation.temperature`: Sampling temperature (default: 1.0)
+- `generation.save_path`: Output directory (default: `./generations`)
+- `model.model_path`: Model path or HuggingFace ID (e.g., `anomyous-author/Explore-Execute-Chain`)
+- `model.checkpoint_path`: Subfolder for HuggingFace models (e.g., `4B-Final`, `8B-Final`)
+- `model.type`: Backend type - `hf` (HuggingFace) or `vllm` (VLLM, faster)
+
+#### Evaluation
+
+Evaluate generated responses using the `eval.py` script:
+
+```bash
+# Basic usage (evaluates generations from default path)
+python e2c/inference/eval.py \
+    --config-path=e2c/config \
+    --config-name=eval \
+    eval.generation_path=./generations \
+    eval.dataset=['gsm8k'] \
+    eval.save_path=./evaluation
+
+# Evaluate multiple datasets
+python e2c/inference/eval.py \
+    --config-path=e2c/config \
+    --config-name=eval \
+    eval.generation_path=./generations \
+    eval.dataset=['gsm8k','math','aime24'] \
+    eval.save_path=./evaluation
+
+# Evaluate all math benchmarks
+python e2c/inference/eval.py \
+    --config-path=e2c/config \
+    --config-name=eval \
+    eval.generation_path=./generations \
+    eval.dataset=['all'] \
+    eval.save_path=./evaluation
+```
+
+**Evaluation Configuration Options:**
+- `eval.generation_path`: Path to generated results directory (required)
+- `eval.dataset`: Dataset name(s) to evaluate
+- `eval.save_path`: Output directory for evaluation results
+- `eval.seed`: Random seed (should match generation seed)
+
+**Note:** The `eval.py` script expects a `config/eval.yaml` file. If it doesn't exist, you can create one based on `eval_only.yaml` or use command-line overrides.
+
+#### Two-Step Workflow Example
+
+```bash
+# Step 1: Generate responses
+python e2c/inference/generate.py \
+    --config-path=e2c/config \
+    --config-name=generate \
+    generation.dataset=['gsm8k'] \
+    generation.sample_num=8 \
+    model.model_path="anomyous-author/Explore-Execute-Chain" \
+    model.checkpoint_path="8B-Final" \
+    generation.save_path=./generations/gsm8k-s8
+
+# Step 2: Evaluate generated results
+python e2c/inference/eval.py \
+    --config-path=e2c/config \
+    --config-name=eval \
+    eval.generation_path=./generations/gsm8k-s8 \
+    eval.dataset=['gsm8k'] \
+    eval.save_path=./evaluation/gsm8k-s8
 ```
 
 **Available Datasets:**
 - **Math**: `gsm8k`, `math`, `aime24`, `aime25`, `amc23`, `math500`, `minerva`, `olympiad_bench`, `all`
-- **Medical**: `medqa`, `medmcqa`, `clinical_knowledge`, `college_biology`, `med` (all medical)
-
-**💡 For complete command reference, see:** [`scripts/COMMANDS.md`](scripts/COMMANDS.md)
+- **Medical**: `medqa`, `medmcqa`, `clinical_knowledge`, `college_biology`, `college_medicine`, `medical_genetics`, `professional_medicine`, `anatomy`, `med` (all medical)
 
 ---
 
@@ -429,14 +515,6 @@ This work builds upon the **VERL** framework.
 We thank the authors for releasing such a flexible and powerful platform.
 
 ---
-
-## 📌 Notes
-
-* Repository is **fully released** with complete training and inference capabilities.
-* **Training scripts** are ready to use for SFT, RL, and EF-SFT training.
-* **TTS features** are under continuous integration with advanced clustering and fusion capabilities.
-* Hyperparameters and prompt templates are provided in the paper appendices.
-* Users can **directly run model inference** and **full training pipeline** with released datasets and code.
 
 ---
 

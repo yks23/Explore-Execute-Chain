@@ -21,6 +21,7 @@ DOWNLOAD_DATA=true
 PREPARE_SFT=true
 PREPARE_RL=true
 NUM_WORKERS=8
+USE_MIRROR=false
 
 # Helper functions
 info() { echo -e "${BLUE}[INFO]${NC} $1"; }
@@ -40,10 +41,12 @@ Options:
     --skip-sft            Skip SFT data preparation
     --skip-rl             Skip RL data preparation
     --num-workers N       Number of parallel workers (default: 8)
+    --mirror              Use mirror source (hf-mirror.com) for faster downloads
     -h, --help            Show this help
 
 Examples:
     bash $0                    # Prepare all data
+    bash $0 --mirror           # Use mirror source for faster downloads
     bash $0 --skip-download    # Skip download, process local data only
     bash $0 --skip-rl          # Prepare SFT data only
 EOF
@@ -56,6 +59,7 @@ while [[ $# -gt 0 ]]; do
         --skip-sft) PREPARE_SFT=false; shift ;;
         --skip-rl) PREPARE_RL=false; shift ;;
         --num-workers) NUM_WORKERS="$2"; shift 2 ;;
+        --mirror) USE_MIRROR=true; shift ;;
         -h|--help) show_help; exit 0 ;;
         *) error "Unknown argument: $1"; show_help; exit 1 ;;
     esac
@@ -66,6 +70,7 @@ info "===== E2C Data Preparation ====="
 info "Project root:   ${PROJECT_ROOT}"
 info "Data directory: ${DATA_DIR}"
 info "Download data:  ${DOWNLOAD_DATA}"
+info "Use mirror:     ${USE_MIRROR}"
 info "Prepare SFT:    ${PREPARE_SFT}"
 info "Prepare RL:     ${PREPARE_RL}"
 info "Workers:        ${NUM_WORKERS}"
@@ -89,7 +94,11 @@ echo ""
 # Step 1: Download data
 if [ "$DOWNLOAD_DATA" = true ]; then
     info "Step 1/3: Downloading raw data..."
-    bash "${SCRIPT_DIR}/download_datasets.sh" || {
+    DOWNLOAD_CMD="${SCRIPT_DIR}/download_datasets.sh"
+    if [ "$USE_MIRROR" = true ]; then
+        DOWNLOAD_CMD="${DOWNLOAD_CMD} --mirror"
+    fi
+    bash ${DOWNLOAD_CMD} || {
         error "Data download failed"
         exit 1
     }
