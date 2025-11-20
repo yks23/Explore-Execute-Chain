@@ -39,8 +39,8 @@ generation:
 model:
   # Model configuration
   type: "hf"  
-  model_path: "/home/fit/alex/Kaisen.Yang/opensource/Explore-Execute-Chain/models/released/8B-Final"  # Model path (HuggingFace ID or local path)
-  checkpoint_path: null  # Optional checkpoint path
+  model_path: "anomyous-author/Explore-Execute-Chain"  # Model path (HuggingFace ID or local path)
+  checkpoint_path: "8B-Final"  # Optional checkpoint path or subfolder (e.g., "4B-Final", "8B-Final")
   trust_remote_code: true  # Trust remote code for custom models
   
   # Model settings

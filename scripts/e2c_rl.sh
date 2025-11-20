@@ -129,10 +129,6 @@ echo "Run Stage 2:       $([ $RUN_STAGE2 -eq 1 ] && echo 'Yes' || echo 'No')"
 echo "=========================================="
 echo ""
 
-# Note: MODEL_PATH can be:
-# - Local path (e.g., models/checkpoints/sft/final)
-# - HuggingFace model ID (e.g., <your-org>/Explore-Execute-Chain)
-# Model will be auto-downloaded if it's a HF ID
 
 # Check if training data exists
 if [ ! -f "$TRAIN_DATA" ]; then
